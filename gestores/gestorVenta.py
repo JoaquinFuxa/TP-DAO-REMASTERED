@@ -36,3 +36,15 @@ class GestorDeVentas:
             print(f"Error al registrar venta: {e}")
             self.db.get_connection().rollback()
             return None
+        
+    def obtener_ventas_por_periodo(self, fecha_inicio, fecha_fin):
+        """Obtiene las ventas dentro de un rango de fechas."""
+        cursor = self.db.get_connection().cursor()
+        cursor.execute("""
+            SELECT id_venta, vin, cliente_id, fecha_venta, vendedor_id
+            FROM ventas
+            WHERE strftime('%Y-%m-%d', fecha_venta) BETWEEN strftime('%Y-%m-%d', ?) AND strftime('%Y-%m-%d', ?)
+        """, (fecha_inicio, fecha_fin))
+        ventas = cursor.fetchall()
+        cursor.close()
+        return ventas

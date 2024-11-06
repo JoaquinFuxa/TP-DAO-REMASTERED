@@ -45,3 +45,10 @@ class GestorDeServicios:
         finally:
             cursor.close()
     
+    def obtener_ingresos_por_servicios(self):
+        """Obtiene los ingresos totales por servicios."""
+        cursor = self.db.get_connection().cursor()
+        cursor.execute("SELECT SUM(costo) FROM servicios")
+        total_servicios = cursor.fetchone()[0] or 0
+        cursor.close()
+        return total_servicios
