@@ -45,7 +45,7 @@ class GestorDeVentas:
             FROM ventas
             WHERE strftime('%Y-%m-%d', fecha_venta) BETWEEN strftime('%Y-%m-%d', ?) AND strftime('%Y-%m-%d', ?)
         """, (fecha_inicio, fecha_fin))
-        ventas = cursor.fetchall()
-        print(ventas)
+        resultados = cursor.fetchall()
         cursor.close()
-        return ventas
+        ventas = [Venta(*resultado) for resultado in resultados]  # Crear objetos ventas
+        return ventas  # Retorna una lista de objetos ventas

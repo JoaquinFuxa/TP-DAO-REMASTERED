@@ -55,12 +55,12 @@ class InterfazReportes(ttk.Frame):
         pdf.drawString(500, y_position, "Vendedor ID")
 
         y_position -= 20
-        for id_venta, vin, cliente_id, fecha_venta, vendedor_id in ventas:
-            pdf.drawString(50, y_position, str(id_venta))
-            pdf.drawString(120, y_position, vin)
-            pdf.drawString(250, y_position, str(cliente_id))
-            pdf.drawString(370, y_position, fecha_venta)
-            pdf.drawString(500, y_position, str(vendedor_id))
+        for venta in ventas:
+            pdf.drawString(50, y_position, str(venta.id_venta))
+            pdf.drawString(120, y_position, venta.auto)
+            pdf.drawString(250, y_position, str(venta.cliente))
+            pdf.drawString(370, y_position, venta.fecha_venta)
+            pdf.drawString(500, y_position, str(venta.vendedor))
             y_position -= 20
 
         pdf.save()
