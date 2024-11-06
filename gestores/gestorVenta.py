@@ -46,5 +46,6 @@ class GestorDeVentas:
             WHERE strftime('%Y-%m-%d', fecha_venta) BETWEEN strftime('%Y-%m-%d', ?) AND strftime('%Y-%m-%d', ?)
         """, (fecha_inicio, fecha_fin))
         ventas = cursor.fetchall()
+        print(ventas)
         cursor.close()
         return ventas

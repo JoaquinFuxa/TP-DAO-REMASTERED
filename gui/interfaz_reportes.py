@@ -5,6 +5,7 @@ from reportlab.pdfgen import canvas
 from gestores.gestorServicio import GestorDeServicios
 from gestores.gestorAuto import GestorDeAutos
 from gestores.gestorVenta import GestorDeVentas
+from datetime import datetime
 
 class InterfazReportes(ttk.Frame):
     def __init__(self, parent):
@@ -38,6 +39,8 @@ class InterfazReportes(ttk.Frame):
             return
 
         gestor_ventas = GestorDeVentas()
+        fecha_inicio = datetime.strptime(fecha_inicio, "%d/%m/%Y").strftime("%Y-%m-%d")
+        fecha_fin = datetime.strptime(fecha_fin, "%d/%m/%Y").strftime("%Y-%m-%d")
         ventas = gestor_ventas.obtener_ventas_por_periodo(fecha_inicio, fecha_fin)
 
         # Crear PDF
@@ -54,10 +57,10 @@ class InterfazReportes(ttk.Frame):
         y_position -= 20
         for id_venta, vin, cliente_id, fecha_venta, vendedor_id in ventas:
             pdf.drawString(50, y_position, str(id_venta))
-            pdf.drawString(100, y_position, vin)
-            pdf.drawString(150, y_position, str(cliente_id))
-            pdf.drawString(200, y_position, fecha_venta)
-            pdf.drawString(250, y_position, str(vendedor_id))
+            pdf.drawString(120, y_position, vin)
+            pdf.drawString(250, y_position, str(cliente_id))
+            pdf.drawString(370, y_position, fecha_venta)
+            pdf.drawString(500, y_position, str(vendedor_id))
             y_position -= 20
 
         pdf.save()
