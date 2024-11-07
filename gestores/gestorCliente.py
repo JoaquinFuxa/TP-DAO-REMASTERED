@@ -1,14 +1,20 @@
 from classes.cliente import Cliente 
-from database.database_connection import DatabaseConnection  
+from database.database_connection import DatabaseConnection
+from classes.notificador.notificador import Notificador  
 
-class GestorDeClientes:
+class GestorDeClientes(Notificador):
     _instance = None  # Singleton para GestorDeClientes
     
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(GestorDeClientes, cls).__new__(cls)
-            cls._instance.db = DatabaseConnection()  # Instancia única de la conexión a la BD
+            cls._instance.db = DatabaseConnection() # Instancia única de la conexión a la BD
+            from gui.interfaz_principal import Aplicacion
+            cls._instance.suscriptor = Aplicacion()
         return cls._instance
+    
+    def notificar(self):
+        self.suscriptor.recibir_notificacion()
 
     def registrar_cliente(self, nombre, apellido, direccion, telefono):
         """
@@ -21,6 +27,7 @@ class GestorDeClientes:
                 (nombre, apellido, direccion, telefono)
             )
             self.db.get_connection().commit()
+            self.notificar()
             return True  # Inserción exitosa
         except Exception as e:
             print(f"Error al registrar el cliente: {e}")
