@@ -86,7 +86,7 @@ class InterfazReportes(ttk.Frame):
         autos = gestor_autos.obtener_autos_mas_vendidos()
 
         pdf = canvas.Canvas("reporte_autos_mas_vendidos.pdf", pagesize=A4)
-        pdf.drawString(100, 800, "Autos Más Vendidos por Marca")
+        pdf.drawString(100, 800, "Modelo Más Vendido por Marca")
         y_position = 750
         
         for marca, modelo, total_ventas in autos:
@@ -94,4 +94,6 @@ class InterfazReportes(ttk.Frame):
             y_position -= 20
 
         pdf.save()
-        messagebox.showinfo("Reporte generado", "El reporte de autos más vendidos se ha guardado como PDF.")
+        messagebox.showinfo("Reporte generado", "El reporte del modelo más vendido por marca se ha guardado como PDF.")
+
+

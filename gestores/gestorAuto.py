@@ -82,19 +82,29 @@ class GestorDeAutos(Notificador):
         return [Auto(vin=row[0], marca=row[1], modelo=row[2], anio=row[3], precio=row[4], estado=row[5]) for row in autos_cliente]
 
     def obtener_autos_mas_vendidos(self):
-        """Obtiene los autos más vendidos por marca."""
+        """Obtiene el modelo más vendido de cada marca."""
         cursor = self.db.get_connection().cursor()
         cursor.execute("""
             SELECT a.marca, a.modelo, COUNT(v.id_venta) AS total_ventas
             FROM autos a
             JOIN ventas v ON a.vin = v.vin
             GROUP BY a.marca, a.modelo
-            ORDER BY a.marca, total_ventas DESC;
+            HAVING COUNT(v.id_venta) = (
+                SELECT MAX(total_ventas)
+                FROM (
+                    SELECT COUNT(v2.id_venta) AS total_ventas
+                    FROM autos a2
+                    JOIN ventas v2 ON a2.vin = v2.vin
+                    WHERE a2.marca = a.marca
+                    GROUP BY a2.modelo
+                ) AS subquery
+            )
+            ORDER BY a.marca;
         """)
         autos = cursor.fetchall()
         cursor.close()
         return autos
-    
+
     def obtener_ingresos_por_ventas(self):
         """Obtiene los ingresos totales por ventas de autos."""
         cursor = self.db.get_connection().cursor()
