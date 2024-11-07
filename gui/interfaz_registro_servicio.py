@@ -56,12 +56,17 @@ class InterfazRegistroServicio(ttk.Frame):
         self.combo_auto['values'] = [auto.vin for auto in autos]  # Usamos el VIN del objeto Auto
 
     def validar_fecha(self, fecha):
-        """Valida que la fecha esté en formato dd/mm/yyyy."""
+        # Expresión regular para validar el formato dd/mm/yyyy
         regex = r'^\d{2}/\d{2}/\d{4}$'
         if re.match(regex, fecha):
             try:
+                # Intentar convertir la fecha para validar que es correcta
                 dia, mes, anio = map(int, fecha.split('/'))
-                datetime(anio, mes, dia)  # Si no es una fecha válida, se lanzará una excepción
+                fecha_ingresada = datetime(anio, mes, dia)  # Si no es una fecha válida, se lanzará una excepción
+                
+                # Comparar la fecha ingresada con la fecha actual
+                if fecha_ingresada > datetime.now():
+                    return False  # La fecha es mayor a la actual
                 return True
             except ValueError:
                 return False  # La fecha no es válida

@@ -108,7 +108,7 @@ class InterfazRegistroVenta(ttk.Frame):
 
         # Validar el formato de la fecha
         if not self.validar_fecha(fecha):
-            messagebox.showerror("Error", "La fecha debe estar en formato dd/mm/yyyy.")
+            messagebox.showerror("Error", "La fecha debe estar en formato dd/mm/yyyy y no puede ser mayor a la actual.")
             return
 
         # Validar que el monto de la comisión sea un número
@@ -145,7 +145,11 @@ class InterfazRegistroVenta(ttk.Frame):
             try:
                 # Intentar convertir la fecha para validar que es correcta
                 dia, mes, anio = map(int, fecha.split('/'))
-                datetime(anio, mes, dia)  # Si no es una fecha válida, se lanzará una excepción
+                fecha_ingresada = datetime(anio, mes, dia)  # Si no es una fecha válida, se lanzará una excepción
+                
+                # Comparar la fecha ingresada con la fecha actual
+                if fecha_ingresada > datetime.now():
+                    return False  # La fecha es mayor a la actual
                 return True
             except ValueError:
                 return False  # La fecha no es válida
