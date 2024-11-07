@@ -1,14 +1,21 @@
 from classes.venta import Venta
 from database.database_connection import DatabaseConnection  # Asegúrate de que el nombre del archivo coincida
+from classes.notificador.notificador import Notificador  
 
-class GestorDeVentas:
+
+class GestorDeVentas(Notificador):
     _instance = None  # Singleton para GestorDeVentas
     
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(GestorDeVentas, cls).__new__(cls)
             cls._instance.db = DatabaseConnection()  # Instancia única de la conexión a la BD
+            from gui.interfaz_principal import Aplicacion 
+            cls._instance.suscriptor = Aplicacion()
         return cls._instance
+    
+    def notificar(self):
+        self.suscriptor.recibir_notificacion()
 
     def registrar_venta(self, vin, cliente, fecha_venta, vendedor, comision):
         """
@@ -31,6 +38,7 @@ class GestorDeVentas:
             # Guardar los cambios en la base de datos
             self.db.get_connection().commit()
             
+            self.notificar()
             return True # Devolvemos el objeto venta si se registró correctamente
         except Exception as e:
             print(f"Error al registrar venta: {e}")

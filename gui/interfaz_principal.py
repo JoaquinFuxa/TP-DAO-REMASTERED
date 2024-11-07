@@ -10,20 +10,18 @@ from gui.interfaz_reportes import InterfazReportes
 from classes.notificador.suscriptor import Suscriptor
 
 class Aplicacion(Suscriptor):
-    _instance = None  # Variable de clase que mantiene la instancia única
+    _instance = None
 
     def __new__(cls, *args, **kwargs):
-        """Crea una nueva instancia si no existe una. Si ya existe, devuelve la instancia existente."""
         if cls._instance is None:
-            # Crear una nueva instancia si no existe
             cls._instance = super().__new__(cls)
-            cls._instance._initialize(*args, **kwargs)  # Inicializar después de crear la instancia
+            cls._instance._initialize(*args, **kwargs)
         return cls._instance
-    
-    def cargar_ventanas(self):
+
+    def cargar_ventanas(self, active_index=0):
         for tab in self.contenedor.tabs():
             self.contenedor.forget(tab)
-            
+        
         print("CREE MUCHAS VENTANAS")
         # Crear las diferentes páginas
         self.frame_auto = InterfazRegistroAuto(self.contenedor)
@@ -45,8 +43,10 @@ class Aplicacion(Suscriptor):
         self.contenedor.add(self.frame_servicio_auto, text="Consultar Servicio")
         self.contenedor.add(self.frame_reportes, text="Reportes")
 
+        # Volver a la pestaña activa antes de recargar
+        self.contenedor.select(active_index)
+
     def _initialize(self, root):
-        """Método de inicialización (se separa de __init__ para que solo se ejecute una vez)"""
         self.root = root
         self.root.title("Concesionaria de Autos")
 
@@ -63,5 +63,7 @@ class Aplicacion(Suscriptor):
         self.cargar_ventanas()
 
     def recibir_notificacion(self):
-        self.cargar_ventanas()
-
+        # Guardar la pestaña activa actual
+        active_index = self.contenedor.index(self.contenedor.select())
+        # Recargar ventanas manteniendo la pestaña activa
+        self.cargar_ventanas(active_index)

@@ -1,14 +1,21 @@
 from classes.auto import Auto
 from database.database_connection import DatabaseConnection  
+from classes.notificador.notificador import Notificador 
 
-class GestorDeAutos:
+
+class GestorDeAutos(Notificador):
     _instance = None  # Singleton para GestorDeAutos
     
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(GestorDeAutos, cls).__new__(cls)
             cls._instance.db = DatabaseConnection()  # Instancia única de la conexión a la BD
+            from gui.interfaz_principal import Aplicacion 
+            cls._instance.suscriptor = Aplicacion()
         return cls._instance
+    
+    def notificar(self):
+        self.suscriptor.recibir_notificacion()
 
     def registrar_auto(self, vin, marca, modelo, anio, precio, estado):
         """
@@ -29,6 +36,7 @@ class GestorDeAutos:
                 (vin, marca, modelo, anio, precio, estado)
             )
             self.db.get_connection().commit()
+            self.notificar()
             return True  # Inserción exitosa
         except Exception as e:
             print(f"Error al registrar el auto: {e}")
